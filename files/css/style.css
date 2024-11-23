@@ -1,0 +1,195 @@
+body, html {
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+}
+
+body {
+	background-image: url("../img/wallpaper.png");
+	background-size: auto;
+}
+
+* {
+	font-family: Roboto;
+}
+
+#openWindows {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+	z-index: 1;
+}
+
+#taskbar {
+	position: absolute;
+	width: 100%; /* Full width for the gradient background */
+	height: 50px;
+	margin: 0px;
+	padding: 0px;
+	background-color: #505050;
+	border-top-left-radius: 20px;
+	bottom: 0px;
+	z-index: 2;
+	overflow-x: auto; /* Horizontal scrolling enabled */
+	overflow-y: hidden;
+	white-space: nowrap;
+	box-sizing: border-box;
+}
+
+#taskbar-content {
+	display: inline-block;
+	padding-right: 64px; /* Reserve space for create app button */
+}
+
+#taskbar-new-app {
+	position: fixed;
+	height: 50px;
+	width: 150px;
+	margin: 0px;
+	padding: 0px;
+	bottom: 0px;
+	right: 0px;
+	z-index: 3;
+	pointer-events: none;
+}
+
+#actual-taskbar-button {
+	position: fixed;
+	height: 50px;
+	width: 50px;
+	margin: 0px;
+	padding: 0px;
+	bottom: 0px;
+	right: 0px;
+	z-index: 3;
+}
+
+#taskbar>#taskbar-content>a {
+	display: inline-block;
+}
+
+#taskbar>#taskbar-content>a>img {
+	margin-top: 1px;
+	margin-right: 8px;
+	height: 48px;
+}
+
+
+
+#openWindows>.window {
+	margin: 0px;
+	padding: 0px;
+	position: absolute;
+	overflow: hidden;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+
+.window>p {
+	margin: 0px;
+	position: absolute;
+	left: 4px;
+}
+
+.window>iframe {
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+	border-top: 1px solid black;
+	margin-top: 19.2px;
+}
+
+.window-controls {
+	width: 90px;
+	height: 20px;
+	padding: 0px;
+	margin: 0px;
+	position: absolute;
+	right: 0px;
+}
+
+.window-controls>span {
+	padding-right: 11px;
+	cursor: pointer;
+}
+
+.window-controls>span>img {
+	margin:0px;
+	padding:0px;
+	vertical-align: bottom;
+	padding-bottom: 2px;
+}
+
+
+.window {
+	border: 1px solid black;
+	position: absolute;
+}
+
+.resize-handle {
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	background: transparent;
+	cursor: pointer;
+}
+
+.resize-handle.top {
+	top: -5px;
+	left: 50%;
+	transform: translateX(-50%);
+	cursor: ns-resize;
+	width: 100%;
+}
+
+.resize-handle.right {
+	top: 50%;
+	right: -5px;
+	transform: translateY(-50%);
+	cursor: ew-resize;
+	height: 100%;
+}
+
+.resize-handle.bottom {
+	bottom: -5px;
+	left: 50%;
+	transform: translateX(-50%);
+	cursor: ns-resize;
+	width: 100%;
+}
+
+.resize-handle.left {
+	top: 50%;
+	left: -5px;
+	transform: translateY(-50%);
+	cursor: ew-resize;
+	height: 100%;
+}
+
+.resize-handle.top-right {
+	top: -5px;
+	right: -5px;
+	cursor: nesw-resize;
+}
+
+.resize-handle.top-left {
+	top: -5px;
+	left: -5px;
+	cursor: nwse-resize;
+}
+
+.resize-handle.bottom-right {
+	bottom: -5px;
+	right: -5px;
+	cursor: nwse-resize;
+}
+
+.resize-handle.bottom-left {
+	bottom: -5px;
+	left: -5px;
+	cursor: nesw-resize;
+}
