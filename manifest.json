@@ -1,0 +1,39 @@
+{
+	"background_color": "#505050",
+	"dir": "ltr",
+	"display": "standalone",
+	"display_override": ["window-controls-overlay"],
+	"name": "WinRAR OS",
+	"orientation": "any",
+	"scope": "./",
+	"short_name": "WinRAR OS",
+	"start_url": "index.html",
+	"theme_color": "#505050",
+	"icons": [
+		{
+			"src": "files/img/icon new.svg",
+			"sizes": "1024x1024 512x512 256x256 128x128 64x64 32x32",
+			"type": "image/svg+xml"
+		}
+	],
+	"id": "winrarisyou.github.io",
+	"description": "A fake \"OS\" that is really just a cool window manager.",
+	"related_applications": [
+		{
+			"platform": "webapp",
+			"url": "https://winrarisyou.github.io/bad-piggies-webgl/",
+			"id": "com.rovio.BadPiggies"
+		},
+		{
+			"platform": "webapp",
+			"url": "https://winrarisyou.github.io/SonicManiaWeb/",
+			"id": "com.sega.sonicmania.runner"
+		}
+	],
+	"categories": [
+		"entertainment",
+		"games",
+		"navigation",
+		"utilities"
+	]
+}
