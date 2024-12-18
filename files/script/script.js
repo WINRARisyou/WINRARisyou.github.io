@@ -422,6 +422,7 @@ createWindow("Zombie Zapper b1.8", "zombie-zapper", 640, 360, "./files/html/Zomb
 createWindow("Snake", "snake", 400, 400, "./files/html/snake.html", null, "#F5F5D3");
 createWindow("Sonic Mania WebGL", "sonic-mania", 640, 360, "https://winrarisyou.github.io/SonicManiaWeb/", null, "#1e43fc");
 createWindow("Bad Piggies WebGL", "bad-piggies", 640, 360, "https://winrarisyou.github.io/bad-piggies-webgl/", null, "#fbb720");
+createWindow("Celeste WASM", "celeste-wasm", 640, 360, "https://winrarisyou.github.io/celeste-wasm/", null, "#FFB6F8");
 showWindow("about");
 closeWindow("game-scraper");
 closeWindow("Exit-Path");
@@ -430,6 +431,7 @@ closeWindow("zombie-zapper");
 closeWindow("snake");
 closeWindow("sonic-mania");
 closeWindow("bad-piggies");
+closeWindow("celeste-wasm");
 
 function updateTaskbar(url, id, removeItem) {
 	var alreadyExists = document.getElementById(id + "-Taskbar");
@@ -451,10 +453,13 @@ function updateTaskbar(url, id, removeItem) {
 			icon.src = "files/img/snake.svg";
 			break;
 		case "bad-piggies":
-			icon.src = "files/img/bad-piggies.png"
+			icon.src = "files/img/bad-piggies.png";
 			break;
 		case "sonic-mania":
-			icon.src = "files/img/sonic-mania.png"
+			icon.src = "files/img/sonic-mania.png";
+			break;
+		case "celeste-wasm":
+			icon.src = "/celeste-wasm/assets/app.ico";
 			break;
 		default:
 			icon.src = `https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url}&size=128`;
