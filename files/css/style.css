@@ -77,8 +77,6 @@ body {
 	height: 48px;
 }
 
-
-
 #openWindows>.window {
 	margin: 0px;
 	padding: 0px;
@@ -124,6 +122,12 @@ body {
 	padding-bottom: 2px;
 }
 
+@keyframes controlHover {
+	to { color: red; }
+}
+#close:hover {
+  animation: controlHover 0.25s forwards;
+}
 
 .window {
 	border: 1px solid black;

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style type="text/css">
+			.context-menu {
+				position: absolute;
+				text-align: center;
+				background: lightgray;
+				border: 1px solid black;
+			}
+
+			.context-menu ul {
+				padding: 0px;
+				margin: 0px;
+				min-width: 150px;
+				list-style: none;
+			}
+
+			.context-menu ul li {
+				padding-bottom: 7px;
+				padding-top: 7px;
+				border: 1px solid black;
+			}
+
+			.context-menu ul li a {
+				text-decoration: none;
+				color: black;
+			}
+
+			.context-menu ul li:hover {
+				background: darkgray;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="targetElement" style="width: 200px; height: 100px; background-color: lightblue;">
+			Right-click me for custom menu
+		</div>
+
+		<div id="contextMenu" class="context-menu" style="display:none">
+			<ul>
+				<li><a href="#">Element-1</a></li>
+				<li><a href="#">Element-2</a></li>
+				<li><a href="#">Element-3</a></li>
+				<li><a href="#">Element-4</a></li>
+				<li><a href="#">Element-5</a></li>
+				<li><a href="#">Element-6</a></li>
+				<li><a href="#">Element-7</a></li>
+			</ul>
+		</div>
+
+		<script>
+			const targetElement = document.getElementById("targetElement");
+			const contextMenu = document.getElementById("contextMenu");
+
+			document.onclick = hideMenu;
+
+			targetElement.oncontextmenu = function (e) {
+				e.preventDefault();
+
+				contextMenu.style.display = 'block';
+				contextMenu.style.left = e.pageX + "px";
+				contextMenu.style.top = e.pageY + "px";
+			};
+
+			function hideMenu() {
+				contextMenu.style.display = "none";
+			}
+
+			document.oncontextmenu = function (e) {
+				// Allow default context menu if clicked outside the target element
+				if (e.target !== targetElement) {
+					hideMenu();
+					return true;
+				}
+				return false;
+			};
+		</script>
+	</body>
+</html>

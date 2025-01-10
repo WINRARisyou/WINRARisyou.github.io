@@ -4,7 +4,7 @@ module.exports = {
 	globPatterns: [
 		'**/*.{css,html,svg,png,js}'
 	],
-	swDest: 'sw.js',
+	swDest: 'WINRARisyou.github.io/sw.js',
 	ignoreURLParametersMatching: [
 		/^utm_/,
 		/^fbclid$/

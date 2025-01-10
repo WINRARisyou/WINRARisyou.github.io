@@ -13,7 +13,7 @@
 		<link rel="manifest" href="manifest.json">
 		<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
 		<script defer src="https://cdn.jsdelivr.net/npm/eruda"></script>
-		<!-- <script>window.addEventListener("DOMContentLoaded", event => { eruda.init(); });</script> -->
+		<script>window.addEventListener("DOMContentLoaded", event => { eruda.init(); });</script>
 		<script>
 			const registerServiceWorker = async () => {
 				if ("serviceWorker" in navigator) {
@@ -43,11 +43,12 @@
 		</div>
 		<div id="taskbar">
 			<img id="taskbar-new-app" src="files/img/add app.svg" />
-			<a id="actual-taskbar-button" href="javascript:void(0);" onclick="createWindowDialog()"></a>
+			<a id="actual-taskbar-button" href="javascript:void(0);" onclick="createCustomWindow()"></a>
 			<div id="taskbar-content">
 				<!-- Will be filled in dynamically -->
 			</div>
 		</div>
-		<script src="files/script/script.js"></script>
+		<script src="files/script/windows.js"></script>
+		<script src="files/script/main.js"></script>
 	</body>
 </html>

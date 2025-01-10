@@ -10,7 +10,6 @@ var highestZIndex = 3;
 function updateMousePosition(event) {
 	mouseX = event.clientX;
 	mouseY = event.clientY;
-	//console.log(mouseX, mouseY);
 }
 
 document.addEventListener("mousemove", updateMousePosition);
@@ -22,9 +21,29 @@ document.addEventListener("mousemove", (event) => {
 	draggingElements.forEach((element) => {
 		// check if the element is being dragged or resized
 		if (element.getAttribute("dragging") === "") {
-			element.style.top = `${mouseY - offsetY}px`;
-			element.style.left = `${mouseX - offsetX}px`;
-		} else if (element.getAttribute("dragging") === "resize") {
+			let stopX, stopY = false
+			if (element.getAttribute("customHTML") != null && mouseY > (element.offsetTop) + 20) {
+				return;
+			}
+			if (element.offsetHeight + (mouseY - offsetY) >= document.getElementById("taskbar").offsetTop) {
+				stopY = true
+				element.style.top = `${document.getElementById("taskbar").offsetTop - element.offsetHeight}px`;
+			}
+			if (element.offsetWidth + (mouseX - offsetX) >= window.innerWidth) {
+				stopX = true
+				element.style.left = `${window.innerWidth - element.offsetWidth}px`
+			}
+			if (element.offsetTop + (mouseY - offsetY) < 0) {
+				stopY = true
+				element.style.top = "0px"
+			}
+			if (element.offsetLeft + (mouseX - offsetX) < 0) {
+				stopX = true
+				element.style.left = "0px"
+			}
+			if (!stopY) element.style.top = `${mouseY - offsetY}px`;
+			if (!stopX) element.style.left = `${mouseX - offsetX}px`;
+		} else if (element.getAttribute("resize")) {
 			var resizeDirection = element.getAttribute("resize-direction");
 			resizeWindow(element, resizeDirection, event);
 		}
@@ -39,7 +58,7 @@ document.addEventListener("mousemove", (event) => {
 
 var taskbar = document.getElementById("taskbar-content");
 
-function createWindowDialog() {
+function createCustomWindow() {
 	//var winContent = document.createElement("div");
 	var winContent = `
 	<h3>Create Custom App</h3>
@@ -78,10 +97,19 @@ function startResize(event, windowElement, direction) {
 }
 
 function resizeWindow(event, windowElement, direction) {
+	/*
+	if (windowElement.offsetTop < 0) {
+	 	var x = Math.abs(windowElement.offsetTop)
+	 	windowElement.style.top = `${x + windowElement.offsetTop}px`
+	 	windowElement.style.height = `${x + windowElement.offsetHeight}px`
+	 	return;
+	}
+	*/
 	var iframe = windowElement.querySelector("iframe");
 	if (!resizing) return;
 	if (!iframe) return;
 	iframe.style.pointerEvents = "none";
+	var maxWidth = windowElement.querySelector("p").offsetWidth + 100;
 
 
 	var deltaX = event.clientX - initialMouseX; // horizontal movement
@@ -90,7 +118,7 @@ function resizeWindow(event, windowElement, direction) {
 	switch (direction) {
 		case "right":
 			var newWidthRight = initialWidth + deltaX;
-			if (newWidthRight > 100) {
+			if (newWidthRight >= maxWidth) {
 				windowElement.style.width = `${newWidthRight}px`;
 				iframe.style.width = `${newWidthRight}px`;
 			}
@@ -98,7 +126,7 @@ function resizeWindow(event, windowElement, direction) {
 
 		case "left":
 			var newWidthLeft = initialWidth - deltaX;
-			if (newWidthLeft > 100) {
+			if (newWidthLeft >= maxWidth) {
 				windowElement.style.width = `${newWidthLeft}px`;
 				iframe.style.width = `${newWidthLeft}px`;
 				windowElement.style.left = `${initialLeft + deltaX}px`; // adjust left position
@@ -107,7 +135,7 @@ function resizeWindow(event, windowElement, direction) {
 
 		case "bottom":
 			var newHeightBottom = initialHeight + deltaY;
-			if (newHeightBottom > 100) {
+			if (newHeightBottom >= 100) {
 				windowElement.style.height = `${newHeightBottom}px`;
 				iframe.style.height = `${newHeightBottom - 20}px`;
 			}
@@ -115,7 +143,7 @@ function resizeWindow(event, windowElement, direction) {
 
 		case "top":
 			var newHeightTop = initialHeight - deltaY;
-			if (newHeightTop > 100) {
+			if (newHeightTop >= 100) {
 				windowElement.style.height = `${newHeightTop}px`;
 				iframe.style.height = `${newHeightTop - 20}px`;
 				windowElement.style.top = `${initialTop + deltaY}px`; // adjust top position
@@ -125,7 +153,7 @@ function resizeWindow(event, windowElement, direction) {
 		case "top-right":
 			// Top
 			var newHeightTopRight = initialHeight - deltaY;
-			if (newHeightTopRight > 100) {
+			if (newHeightTopRight >= 100) {
 				windowElement.style.height = `${newHeightTopRight}px`;
 				iframe.style.height = `${newHeightTopRight - 20}px`;
 
@@ -134,7 +162,7 @@ function resizeWindow(event, windowElement, direction) {
 			}
 			// Right
 			var newWidthTopRight = initialWidth + deltaX;
-			if (newWidthTopRight > 100) {
+			if (newWidthTopRight >= maxWidth) {
 				windowElement.style.width = `${newWidthTopRight}px`;
 				iframe.style.width = `${newWidthTopRight}px`
 			}
@@ -143,14 +171,14 @@ function resizeWindow(event, windowElement, direction) {
 		case "top-left":
 			// Top
 			var newHeightTopLeft = initialHeight - deltaY;
-			if (newHeightTopLeft > 100) {
+			if (newHeightTopLeft >= 100) {
 				windowElement.style.height = `${newHeightTopLeft}px`;
 				iframe.style.height = `${newHeightTopLeft - 20}px`;
 				windowElement.style.top = `${initialTop + deltaY}px`;
 			}
 			// Left
 			var newWidthTopLeft = initialWidth - deltaX;
-			if (newWidthTopLeft > 100) {
+			if (newWidthTopLeft >= maxWidth) {
 				windowElement.style.width = `${newWidthTopLeft}px`;
 				iframe.style.width = `${newWidthTopLeft}px`;
 				windowElement.style.left = `${initialLeft + deltaX}px`;
@@ -161,14 +189,14 @@ function resizeWindow(event, windowElement, direction) {
 		case "bottom-right":
 			// Bottom
 			var newHeightBottomRight = initialHeight + deltaY;
-			if (newHeightBottomRight > 100) {
+			if (newHeightBottomRight >= 100) {
 				windowElement.style.height = `${newHeightBottomRight}px`;
 				iframe.style.height = `${newHeightBottomRight - 20}px`;
 
 			}
 			// Right
 			var newWidthBottomRight = initialWidth + deltaX;
-			if (newWidthBottomRight > 100) {
+			if (newWidthBottomRight >= maxWidth) {
 				windowElement.style.width = `${newWidthBottomRight}px`;
 				iframe.style.width = `${newWidthBottomRight}px`;
 
@@ -178,13 +206,13 @@ function resizeWindow(event, windowElement, direction) {
 		case "bottom-left":
 			// Bottom
 			var newHeightBottomLeft = initialHeight + deltaY;
-			if (newHeightBottomLeft > 100) {
+			if (newHeightBottomLeft >= 100) {
 				windowElement.style.height = `${newHeightBottomLeft}px`;
 				iframe.style.height = `${newHeightBottomLeft - 20}px`
 			}
 			// Left
 			var newWidthBottomLeft = initialWidth - deltaX;
-			if (newWidthBottomLeft > 100) {
+			if (newWidthBottomLeft >= maxWidth) {
 				windowElement.style.width = `${newWidthBottomLeft}px`;
 				windowElement.style.left = `${initialLeft + deltaX}px`;
 				iframe.style.width = `${newWidthBottomLeft}px`;
@@ -329,6 +357,8 @@ function createWindow(title, id, width, height, url, customHTML, color) {
 	maximize.setAttribute("onclick", `maximizeWindow("${id}")`);
 	close.innerHTML = "&times;"
 	close.setAttribute("onclick", `closeWindow("${id}");`)
+	close.id = "close"
+	close.setAttribute("style", "@keyframes controlHover { to { color: red; } } ; this:hover {  animation: controlHover 0.25s forwards;}")
 	windowControls.append(openInNew, minimize, maximize, close);
 	window.appendChild(windowControls);
 
@@ -411,27 +441,6 @@ function createWindow(title, id, width, height, url, customHTML, color) {
 	windows[id] = [title, id, width, (height - 20), url, customHTML, color];
 	updateTaskbar(iframe.src, id);
 }
-
-// default windows
-createWindow("About Me", "about", 700, 415, "./files/html/about_me.html", null, "#D2B48C");
-createWindow("WINARisyou (WinRAR)", "github", 700, 415, "https://github.com/WINRARisyou", null, "#D2B48C");
-createWindow("Cool Math Games scraper", "game-scraper", 700, 415, "https://replit.com/@WINRARisyou/GameScraper?v=1#main.py", null, "#0053a2");
-createWindow("Exit Path 4 (very unfinished/abandoned mod)", "Exit-Path", 600, 400, "https://winrarisyou.github.io/Exit-Path/html/index.html", null, "#808080");
-createWindow("Exit Path 4 Level Editor", "Exit-Path-Editor", 423, 294, "./files/html/Exit Path Stage Creator.html", null, "#808080");
-createWindow("Zombie Zapper b1.8", "zombie-zapper", 640, 360, "./files/html/Zombie Zapper b1.8.html", null, "#808080");
-createWindow("Snake", "snake", 400, 400, "./files/html/snake.html", null, "#F5F5D3");
-createWindow("Sonic Mania WebGL", "sonic-mania", 640, 360, "https://winrarisyou.github.io/SonicManiaWeb/", null, "#1e43fc");
-createWindow("Bad Piggies WebGL", "bad-piggies", 640, 360, "https://winrarisyou.github.io/bad-piggies-webgl/", null, "#fbb720");
-createWindow("Celeste WASM", "celeste-wasm", 640, 360, "https://winrarisyou.github.io/celeste-wasm/", null, "#FFB6F8");
-showWindow("about");
-closeWindow("game-scraper");
-closeWindow("Exit-Path");
-closeWindow("Exit-Path-Editor");
-closeWindow("zombie-zapper");
-closeWindow("snake");
-closeWindow("sonic-mania");
-closeWindow("bad-piggies");
-closeWindow("celeste-wasm");
 
 function updateTaskbar(url, id, removeItem) {
 	var alreadyExists = document.getElementById(id + "-Taskbar");
