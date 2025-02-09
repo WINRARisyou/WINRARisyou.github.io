@@ -73,7 +73,7 @@ define(["./workbox-3452bdde"], (function(e) {
 		revision: "796beb130c9d7bfe62f2049f501dff86"
 	}, {
 		url: "files/script/main.js",
-		revision: "88a5192c195ba61b113d1298fd96c113"
+		revision: "88a5192c195ba61b113d1298fd96c114"
 	}, {
 		url: "files/script/snake.js",
 		revision: "820a0ab0893e7469423a7fbd3cf3f6e5"
