@@ -470,6 +470,9 @@ function updateTaskbar(url, id, removeItem) {
 		case "celeste-wasm":
 			icon.src = "/celeste-wasm/assets/app.ico";
 			break;
+		case "smc-dmm":
+			icon.src = "/SMC-Desktop-Mod-Manager/files/images/icon-256.ico"
+			break;
 		default:
 			icon.src = `https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url}&size=128`;
 			break;
