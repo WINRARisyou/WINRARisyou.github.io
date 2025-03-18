@@ -265,6 +265,10 @@ document.addEventListener("mouseup", () => {
 });
 
 function showWindow(id) {
+	if (id == "start-menu") {
+		openStartMenu();
+		return;
+	}
 	var elem = document.getElementById(id);
 	var id = id;
 	//console.log("ID: " + id)
@@ -308,7 +312,7 @@ function maximizeWindow(id) {
 	elem.style.top = "0px";
 	elem.style.left = "0px";
 	elem.style.width = "100%";
-	elem.style.height = "calc(100vh - 52px)";
+	elem.style.height = "calc(100vh - 51px)";
 	var iframe = elem.querySelector("iframe");
 	iframe.style.width = "100%";
 	iframe.style.height = "calc(100% - 20px)";
@@ -449,9 +453,12 @@ function updateTaskbar(url, id, removeItem) {
 	var btn = document.createElement("a");
 	btn.id = id + "-Taskbar";
 	btn.href = "javascript:void(0);";
-	btn.title = windows[id][0]
+	if (id != "start-menu") btn.title = windows[id][0]; 
 	var icon = document.createElement("img");
 	switch (id) {
+		case "start-menu":
+			icon.src= "files/img/start-menu1.svg"
+			break;
 		case "about":
 			icon.src = "files/img/icon new.svg";
 			break;
@@ -482,3 +489,4 @@ function updateTaskbar(url, id, removeItem) {
 	btn.appendChild(icon);
 	taskbar.appendChild(btn);
 }
+updateTaskbar("", "start-menu", false) // Add the start menu button

@@ -1,5 +1,7 @@
 // default windows
 // window code in windows.js
+//createWindow("", "start-menu", 0, 0, "", null, "#3C3C3C");
+createWindow("Settings", "settings", 700, 415, "./files/html/settings.html", null, "#3C3C3C");
 createWindow("About Me", "about", 700, 415, "./files/html/about_me.html", null, "#D2B48C");
 createWindow("Exit Path 4 (very unfinished/abandoned mod)", "Exit-Path", 600, 400, "https://winrarisyou.github.io/Exit-Path/html/index.html", null, "#808080");
 createWindow("Exit Path 4 Level Editor", "Exit-Path-Editor", 423, 294, "./files/html/Exit Path Stage Creator.html", null, "#808080");
@@ -9,6 +11,7 @@ createWindow("SMC Desktop Mod Manager", "smc-dmm", 640, 360, "https://winrarisyo
 //createWindow("Sonic Mania WebGL", "sonic-mania", 640, 360, "https://winrarisyou.github.io/SonicManiaWeb/", null, "#1e43fc");
 createWindow("Bad Piggies WebGL", "bad-piggies", 640, 360, "https://winrarisyou.github.io/bad-piggies-webgl/", null, "#fbb720");
 //createWindow("Celeste WASM", "celeste-wasm", 640, 360, "https://winrarisyou.github.io/celeste-wasm/", null, "#FFB6F8");
+closeWindow("settings");
 showWindow("about");
 closeWindow("Exit-Path");
 closeWindow("Exit-Path-Editor");

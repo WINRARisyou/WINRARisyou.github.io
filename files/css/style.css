@@ -23,6 +23,53 @@ body {
 	z-index: 1;
 }
 
+#startMenu {
+	margin: 0px;
+	padding: 0px;
+	position: absolute;
+	width: 40%;
+	height: calc(80% - 50px);
+	background: rgba(80, 80, 80, 0.60);
+	border: 2px solid;
+	border-color: rgba(80, 80, 80, 0.90);
+	border-radius: 0.5rem;
+	backdrop-filter: blur(10px); /* frosted glass effect */
+	z-index: 1;
+	left: 20px;
+}
+
+@keyframes openStartMenu {
+	to { bottom: 70px; }
+}
+
+@keyframes closeStartMenu {
+	to { bottom: calc(0px - (80% - 50px)); }
+}
+
+.openStartMenu {
+	bottom: calc(0px - (80% - 50px));
+	animation: openStartMenu ease-out 0.12s forwards;
+}
+
+.closeStartMenu {
+	bottom: 70px;
+	animation: closeStartMenu ease-in 0.1s forwards;
+}
+
+.startMenuClosed {
+	bottom: calc(0px - (80% - 50px));
+}
+
+.notification {
+	width: 250px;
+	height: 150px;
+	background: rgba(80, 80, 80, 0.60);
+	border: 2px solid;
+	border-color: rgba(80, 80, 80, 0.90);
+	border-radius: 0.5rem;
+	backdrop-filter: blur(10px); /* frosted glass effect */
+}
+
 #taskbar {
 	position: absolute;
 	width: 100%; /* Full width for the gradient background */
@@ -84,8 +131,8 @@ body {
 	overflow: hidden;
 	-webkit-user-select: none;
 	user-select: none;
+	border-radius: 0.25rem;
 }
-
 
 .window>p {
 	margin: 0px;
