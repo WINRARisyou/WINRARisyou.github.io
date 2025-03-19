@@ -12,7 +12,8 @@ createWindow("SMC Desktop Mod Manager", "smc-dmm", 640, 360, "https://winrarisyo
 createWindow("Bad Piggies WebGL", "bad-piggies", 640, 360, "https://winrarisyou.github.io/bad-piggies-webgl/", null, "#fbb720");
 //createWindow("Celeste WASM", "celeste-wasm", 640, 360, "https://winrarisyou.github.io/celeste-wasm/", null, "#FFB6F8");
 closeWindow("settings");
-showWindow("about");
+//showWindow("about");
+closeWindow("about");
 closeWindow("Exit-Path");
 closeWindow("Exit-Path-Editor");
 closeWindow("zombie-zapper");

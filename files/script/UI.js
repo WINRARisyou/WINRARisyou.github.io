@@ -61,7 +61,8 @@ class Notification {
 		notification.appendChild(titleElement);
 		notification.appendChild(textElement);
 
-		document.body.appendChild(notification);
+		let notifContainer = document.getElementById("notifications")
+		notifContainer.appendChild(notification);
 
 		setTimeout(() => {
 			notification.classList.add('fade-out');
@@ -72,4 +73,5 @@ class Notification {
 	}
 }
 
-var testNotif = new Notification('Battery Low', 'Your battery is running low.', '');
+var testNotif = new Notification('Battery Low', 'Your battery is running low.', 'files/img/bad-piggies.png');
+var testNotif2 = new Notification('Battery Low', 'Your battery is running low.', 'files/img/bad-piggies.png');

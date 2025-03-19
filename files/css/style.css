@@ -32,7 +32,7 @@ body {
 	background: rgba(80, 80, 80, 0.60);
 	border: 2px solid;
 	border-color: rgba(80, 80, 80, 0.90);
-	border-radius: 0.5rem;
+	border-radius: 8px;
 	backdrop-filter: blur(10px); /* frosted glass effect */
 	z-index: 1;
 	left: 20px;
@@ -60,19 +60,58 @@ body {
 	bottom: calc(0px - (80% - 50px));
 }
 
+#notifications {
+	position: absolute;
+	width: 350px;
+	right: 15px;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	z-index: 2;
+	pointer-events: none;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding-bottom: 65px;
+	box-sizing: border-box;
+}
+
 .notification {
-	width: 250px;
+	position: relative;
+	width: 350px;
 	height: 150px;
-	background: rgba(80, 80, 80, 0.60);
+	background: rgba(90, 90, 90, 0.9);
 	border: 2px solid;
 	border-color: rgba(80, 80, 80, 0.90);
-	border-radius: 0.5rem;
-	backdrop-filter: blur(10px); /* frosted glass effect */
+	border-radius: 8px;
+	backdrop-filter: blur(20px); /* frosted glass effect */
+	left: 0px;
+	pointer-events: all;
+	color: #ddd;
+}
+
+.notification-icon {
+	position: relative;
+	left: 8px;
+	top: 8px;
+	float: left;
+	margin-right: 15px;
+	width: 64px;
+	height: 64px;
+}
+
+.notification-title {
+	margin-top: 8px;
+	margin-bottom: 2px;
+}
+
+.notification-text {
+	margin: 0px;
 }
 
 #taskbar {
 	position: absolute;
-	width: 100%; /* Full width for the gradient background */
+	width: 100%;
 	height: 50px;
 	margin: 0px;
 	padding: 0px;
@@ -131,7 +170,7 @@ body {
 	overflow: hidden;
 	-webkit-user-select: none;
 	user-select: none;
-	border-radius: 0.25rem;
+	border-radius: 4px;
 }
 
 .window>p {
