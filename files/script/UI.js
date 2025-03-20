@@ -34,7 +34,8 @@ function openStartMenu() {
 /* End Start Menu */
 /* Sys Toasts */
 class Notification {
-	constructor(title, text, icon) {
+	constructor(initiator, title, text, icon) {
+		this.initiator = initiator;
 		this.title = title;
 		this.text = text;
 		this.icon = icon;
@@ -42,36 +43,41 @@ class Notification {
 	}
 
 	createNotification() {
-		const notification = document.createElement('div');
-		notification.classList.add('notification');
+		const notification = document.createElement("div");
+		notification.classList.add("notification");
 
-		const iconElement = document.createElement('img');
+		const iconElement = document.createElement("img");
 		iconElement.src = this.icon;
-		iconElement.classList.add('notification-icon');
+		iconElement.classList.add("notification-icon");
 
-		const titleElement = document.createElement('h4');
+		const initiatorElement = document.createElement("h4")
+		initiatorElement.textContent = this.initiator;
+		initiatorElement.classList.add("notification-title")
+
+		const titleElement = document.createElement("h4");
 		titleElement.textContent = this.title;
-		titleElement.classList.add('notification-title');
+		titleElement.classList.add("notification-title");
 
-		const textElement = document.createElement('p');
+		const textElement = document.createElement("p");
 		textElement.textContent = this.text;
-		textElement.classList.add('notification-text');
+		textElement.classList.add("notification-text");
 
 		notification.appendChild(iconElement);
+		notification.appendChild(initiatorElement);
 		notification.appendChild(titleElement);
 		notification.appendChild(textElement);
 
-		let notifContainer = document.getElementById("notifications")
+		const notifContainer = document.getElementById("notifications")
 		notifContainer.appendChild(notification);
 
 		setTimeout(() => {
-			notification.classList.add('fade-out');
-			notification.addEventListener('transitionend', () => {
+			notification.classList.add("fade-out");
+			notification.addEventListener("transitionend", () => {
 				notification.remove();
 			});
 		}, 3000);
 	}
 }
 
-var testNotif = new Notification('Battery Low', 'Your battery is running low.', 'files/img/bad-piggies.png');
-var testNotif2 = new Notification('Battery Low', 'Your battery is running low.', 'files/img/bad-piggies.png');
+var testNotif = new Notification("RAR-OS System",  "Battery Low", "Your battery is running low. Please connect a charger to prevent unexpected shutdowns.", "files/img/UI/battery low.svg");
+var testNotif2 = new Notification("RAR-OS System", "Battery Low", "Your battery is running low.", "files/img/UI/battery low.svg");

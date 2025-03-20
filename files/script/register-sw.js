@@ -16,7 +16,7 @@ const registerServiceWorker = async () => {
 		}
 	}
 };
-if (location.href.endsWith("github.dev/") || location.href.startsWith("http://localhost")) {
+if (location.href.endsWith("github.dev/") || location.href.startsWith("http://localhost") || location.href.endsWith("gitpod.io/")) {
 	window.addEventListener("DOMContentLoaded", event => { eruda.init(); });
 } else {
 	registerServiceWorker();

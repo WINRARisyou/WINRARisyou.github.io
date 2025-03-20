@@ -353,7 +353,7 @@ function createWindow(title, id, width, height, url, customHTML, color) {
 	var minimize = document.createElement("span");
 	var maximize = document.createElement("span");
 	var close = document.createElement("span");
-	openInNew.innerHTML = `<img src="files/img/open in new.svg" width="16px"/>`	;
+	openInNew.innerHTML = `<img src="files/img/UI/open in new.svg" width="16px"/>`	;
 	openInNew.setAttribute("onclick", `openSite("${url}")`);
 	minimize.textContent = "‒";
 	minimize.setAttribute("onclick", `minimizeWindow("${id}")`);
@@ -457,22 +457,22 @@ function updateTaskbar(url, id, removeItem) {
 	var icon = document.createElement("img");
 	switch (id) {
 		case "start-menu":
-			icon.src= "files/img/start-menu1.svg"
+			icon.src= "files/img/UI/start-menu.svg"
 			break;
 		case "about":
-			icon.src = "files/img/icon new.svg";
+			icon.src = "files/img/Taskbar/icon new.svg";
 			break;
 		case "zombie-zapper":
-			icon.src = "files/img/zmb.svg";
+			icon.src = "files/img/Taskbar/zmb.svg";
 			break;
 		case "snake":
-			icon.src = "files/img/snake.svg";
+			icon.src = "files/img/Taskbar/snake.svg";
 			break;
 		case "bad-piggies":
-			icon.src = "files/img/bad-piggies.png";
+			icon.src = "files/img/Taskbar/bad-piggies.png";
 			break;
 		case "sonic-mania":
-			icon.src = "files/img/sonic-mania.png";
+			icon.src = "files/img/Taskbar/sonic-mania.png";
 			break;
 		case "celeste-wasm":
 			icon.src = "/celeste-wasm/assets/app.ico";
