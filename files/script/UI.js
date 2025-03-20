@@ -62,20 +62,32 @@ class Notification {
 		textElement.textContent = this.text;
 		textElement.classList.add("notification-text");
 
+		const closeButton = document.createElement("button");
+		closeButton.innerHTML = "&times;";
+		closeButton.addEventListener("click", () => {
+			let event = new TransitionEvent("closed");
+			notification.dispatchEvent(event)
+		});
+
 		notification.appendChild(iconElement);
 		notification.appendChild(initiatorElement);
 		notification.appendChild(titleElement);
 		notification.appendChild(textElement);
+		notification.appendChild(closeButton);
 
 		const notifContainer = document.getElementById("notifications")
 		notifContainer.appendChild(notification);
+		notification.addEventListener("closed", () => {
+			notification.remove();
+		});
+
 
 		setTimeout(() => {
 			notification.classList.add("fade-out");
-			notification.addEventListener("transitionend", () => {
+			setTimeout(() => {
 				notification.remove();
-			});
-		}, 3000);
+			}, 500)
+		}, 9500);
 	}
 }
 
