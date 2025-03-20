@@ -78,9 +78,11 @@ class Notification {
 		const notifContainer = document.getElementById("notifications")
 		notifContainer.appendChild(notification);
 		notification.addEventListener("closed", () => {
-			notification.remove();
+			notification.classList.add("manualClose")
+			setTimeout(() => {
+				notification.remove();
+			}, 300)
 		});
-
 
 		setTimeout(() => {
 			notification.classList.add("fade-out");

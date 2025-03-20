@@ -34,7 +34,7 @@ body {
 	border-color: rgba(80, 80, 80, 0.90);
 	border-radius: 8px;
 	backdrop-filter: blur(10px); /* frosted glass effect */
-	z-index: 1;
+	z-index: 2;
 	left: 20px;
 }
 
@@ -108,8 +108,17 @@ body {
 }
 
 .fade-out {
-	animation: fade-out 0.5s linear forwards;
+	animation: fade-out 0.5s ease-in forwards;
 }
+
+@keyframes move-right {
+	to { transform: translateX(100%); }
+}
+
+.notification.manualClose {
+	animation: fade-out 0.3s ease-in forwards, move-right 0.3s ease-in forwards;
+}
+
 
 .notification-icon {
 	position: relative;

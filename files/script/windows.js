@@ -67,9 +67,9 @@ function createCustomWindow() {
 	<p><em>**MUST HAVE THE https:// PART AT THE BEGINNING OR THE ICON WILL NOT WORK.</em></p><br>
 	<p>Color: <input id="col" type="text" placeholder="#00FF00"></p><br>
 	<p>**WILL NOT WORK WITHOUT THE "#". It's a hex code BTW, look up color picker and use the hex thing.</p><br>
-	<button onclick="createWindow(document.getElementById('tInp').value, highestZIndex, 640, 360, document.getElementById('url').value, null, document.getElementById('col').value);updateTaskbar('', 'create-custom-window', true);this.parentElement.remove();">Create!</button>
+	<button onclick="new Window(document.getElementById('tInp').value, highestZIndex, 640, 360, document.getElementById('url').value, null, document.getElementById('col').value);updateTaskbar('', 'create-custom-window', true);this.parentElement.remove();">Create!</button>
 	`
-	createWindow("Create Custom App", "create-custom-window", 854, 480, null, winContent, "#ffcdff");
+	new Window("Create Custom App", "create-custom-window", 854, 480, null, winContent, "#ffcdff");
 }
 
 // resize window logic
@@ -287,7 +287,7 @@ function showWindow(id) {
 		// destructure the window data
 		var [title, id, width, height, url, customHTML, color] = windowData;
 
-		createWindow(title, id, width, height, url, customHTML, color);
+		new Window(title, id, width, height, url, customHTML, color);
 		return;
 	}
 
@@ -327,123 +327,141 @@ function closeWindow(id) {
 var openWindows = document.getElementById("openWindows");
 var windows = {};
 
+class Window {
+	constructor(title, id, width, height, url = "", customHTML = null, color = "#00FF00") {
+		if (document.getElementById(id) != null) return; // prevent duplicates
+		// default window attributes
+		if (title == "") this.title = "Untitled Window";
+		else this.title = title;
+		this.id = id;
+		this.width = width;
+		this.height = height + 20;
+		if (url == "") this.url = "https://google.com/webhp?igu=1";
+		else this.url = url;
+		this.customHTML = customHTML;
+		if (color == "") this.color = "#00FF00";
+		else this.color = color
 
-function createWindow(title, id, width, height, url, customHTML, color) {
-	if (document.getElementById(id) != null) return;
-	// default window attributes
-	if (title == "") title = "Google";
-	height += 20
-	if (url == "") url = "https://google.com/webhp?igu=1";
-	if (color == "") color = "#00FF00";
+		this.createElement();
+		this.addEventListeners();
+		this.addResizeHandles();
+		showWindow(id);
+		windows[id] = [this.title, this.id, width, height, url, customHTML, color];
+		this.addToTaskbar();
+	}
 
-	// window element
-	var window = document.createElement("div");
-	window.id = id;
-	window.classList.add("window");
+	createElement() {
+		// window element
+		this.window = document.createElement("div");
+		this.window.id = this.id;
+		this.window.classList.add("window");
+		this.window.setAttribute("style", `width: ${this.width}px; height: ${this.height}px; top: 0px; left: 0px; background-color: ${this.color};`);
 
-	// window content
-	var t = document.createElement("p");
-	t.textContent = title;
-	window.appendChild(t);
+		// window title
+		const titleElem = document.createElement("p");
+		titleElem.textContent = this.title;
+		this.window.appendChild(titleElem);
 
-	// window controls
-	var windowControls = document.createElement("div");
-	windowControls.classList.add("window-controls");
-	var openInNew = document.createElement("span");
-	var minimize = document.createElement("span");
-	var maximize = document.createElement("span");
-	var close = document.createElement("span");
-	openInNew.innerHTML = `<img src="files/img/UI/open in new.svg" width="16px"/>`	;
-	openInNew.setAttribute("onclick", `openSite("${url}")`);
-	minimize.textContent = "‒";
-	minimize.setAttribute("onclick", `minimizeWindow("${id}")`);
-	maximize.textContent = "□";
-	maximize.setAttribute("onclick", `maximizeWindow("${id}")`);
-	close.innerHTML = "&times;"
-	close.setAttribute("onclick", `closeWindow("${id}");`)
-	close.id = "close"
-	close.setAttribute("style", "@keyframes controlHover { to { color: red; } } ; this:hover {  animation: controlHover 0.25s forwards;}")
-	windowControls.append(openInNew, minimize, maximize, close);
-	window.appendChild(windowControls);
+		// window controls
+		const controls = document.createElement("div");
+		controls.classList.add("window-controls");
 
-	// custom html check
-	if (customHTML == null) {
-		var iframe = document.createElement("iframe")
-		iframe.setAttribute("style", `width: ${width}px; height: ${height - 20}px;`)
-		if (!url.startsWith("./")) {
-			if (url.startsWith("https://")) {
-				iframe.src = url;
+		const openInNew = document.createElement("span");
+		openInNew.innerHTML = `<img src="files/img/UI/open in new.svg" width="16px"/>`;
+		openInNew.onclick = () => openSite(this.url);
+
+		const minimize = document.createElement("span");
+		minimize.textContent = "‒";
+		minimize.onclick = () => minimizeWindow(this.id);
+
+		const maximize = document.createElement("span");
+		maximize.textContent = "□";
+		maximize.onclick = () => maximizeWindow(this.id);
+
+		const close = document.createElement("span");
+		close.innerHTML = "&times;";
+		close.id = "close";
+		close.style = "@keyframes controlHover { to { color: red; } } ; this:hover { animation: controlHover 0.25s forwards; }";
+		close.onclick = () => closeWindow(this.id);
+
+		controls.append(openInNew, minimize, maximize, close);
+		this.window.appendChild(controls);
+
+		// custom html check
+		if (this.customHTML == null) {
+			const iframe = document.createElement("iframe");
+			iframe.style.width = `${this.width}px`;
+			iframe.style.height = `${this.height - 20}px`;
+
+			if (!this.url.startsWith("./")) {
+				if (this.url.startsWith("https://")) {
+					iframe.src = this.url;
+				} else {
+					iframe.src = "https://" + this.url;
+				}
 			} else {
-				iframe.src = "https://" + url;
+				iframe.src = this.url;
 			}
+			this.window.appendChild(iframe);
 		} else {
-			iframe.src = url;
+			const iframe = document.createElement("iframe");
+			iframe.style.width = `${this.width}px`;
+			iframe.style.height = `1px`;
+			this.window.appendChild(iframe);
+			this.window.setAttribute("customHTML", "");
+			this.window.insertAdjacentHTML("beforeend", this.customHTML);
 		}
-		window.appendChild(iframe);
-	} else {
-		var iframe = document.createElement("iframe");
-		iframe.setAttribute("style", `width: ${width}px; height: 1px;`);
-		window.appendChild(iframe);
-		windows[id] = [title, id, width, (height - 20), url, customHTML, color];
-		window.setAttribute("customHTML", "");
-		window.insertAdjacentHTML("beforeend", customHTML);
+		// append window
+		openWindows.appendChild(this.window);
 	}
-	
-	// misc window stuff
-	window.setAttribute("style", `width: ${width}px; height: ${height}px; top: 0px; left: 0px; background-color: #00FF00;`);
-	window.addEventListener("mousedown", function (event) {
-		// set the offset between mouse and window
-		offsetX = event.clientX - window.offsetLeft;
-		offsetY = event.clientY - window.offsetTop;
-		
-		// Check if resize handle was clicked
-		var resizeHandle = event.target.closest(".resize-handle");
-		if (resizeHandle) {
-			this.setAttribute("dragging", "resize");
-			this.setAttribute("resize-direction", resizeHandle.getAttribute("data-direction"));
-		} else {
-			this.setAttribute("dragging", "");
-		}
-		
-		highestZIndex++;
-		this.style.zIndex = highestZIndex;
-		
-		// disable pointer events on iframe to allow dragging without getting interrupted
-		var iframe = this.querySelector("iframe");
-		if (iframe) {
-			if (customHTML != null) {
-				iframe.style.height = "1px";
-			}
-			iframe.style.pointerEvents = "none"; // disable iframe interaction during dragging
-		}
-	});
 
-	// resize handles
-	var resizeDirections = ["top", "right", "bottom", "left", "top-right", "top-left", "bottom-right", "bottom-left"];
-	resizeDirections.forEach(direction => {
-		var resizeHandle = document.createElement("div");
-		resizeHandle.classList.add("resize-handle", direction);
-		resizeHandle.setAttribute("data-direction", direction);
-		
-		// attach the startResize function to the mousedown event
-		resizeHandle.addEventListener("mousedown", (event) => {
-			event.stopPropagation(); // prevent dragging from triggering at the same time
-			startResize(event, window, direction);
+	addEventListeners() {
+		this.window.addEventListener("mousedown", (event) => {
+			// set the offset between mouse and window
+			offsetX = event.clientX - this.window.offsetLeft;
+			offsetY = event.clientY - this.window.offsetTop;
+
+			// Check if resize handle was clicked
+			const resizeHandle = event.target.closest(".resize-handle");
+			if (resizeHandle) {
+				this.window.setAttribute("dragging", "resize");
+				this.window.setAttribute("resize-direction", resizeHandle.getAttribute("data-direction"));
+			} else {
+				this.window.setAttribute("dragging", "");
+			}
+
+			highestZIndex++;
+			this.window.style.zIndex = highestZIndex;
+
+			// disable pointer events on iframe to allow dragging without getting interrupted
+			const iframe = this.window.querySelector("iframe");
+			if (iframe) {
+				if (this.customHTML != null) iframe.style.height = "1px";
+				iframe.style.pointerEvents = "none";
+			}
 		});
-
-		window.appendChild(resizeHandle);
-	});
-	
-	// append window
-	openWindows.appendChild(window);
-	if (color != undefined) {
-		window.style.backgroundColor = color;
-	} else {
-		window.style.backgroundColor = "#00FF00;";
 	}
-	showWindow(id);
-	windows[id] = [title, id, width, (height - 20), url, customHTML, color];
-	updateTaskbar(iframe.src, id);
+
+	addResizeHandles() {
+		const resizeDirections = ["top", "right", "bottom", "left", "top-right", "top-left", "bottom-right", "bottom-left"];
+		resizeDirections.forEach(direction => {
+			const handle = document.createElement("div");
+			handle.classList.add("resize-handle", direction);
+			handle.setAttribute("data-direction", direction);
+
+			// attach the startResize function to the mousedown event
+			handle.addEventListener("mousedown", (event) => {
+				event.stopPropagation(); // prevent dragging from triggering at the same time
+				startResize(event, this.window, direction);
+			});
+
+			this.window.appendChild(handle);
+		});
+	}
+
+	addToTaskbar() {
+		updateTaskbar(this.url, this.id, false);
+	}
 }
 
 function updateTaskbar(url, id, removeItem) {
@@ -460,7 +478,7 @@ function updateTaskbar(url, id, removeItem) {
 			icon.src= "files/img/UI/start-menu.svg"
 			break;
 		case "about":
-			icon.src = "files/img/Taskbar/icon new.svg";
+			icon.src = "files/img/icon.svg";
 			break;
 		case "zombie-zapper":
 			icon.src = "files/img/Taskbar/zmb.svg";
