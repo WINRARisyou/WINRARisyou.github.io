@@ -44,7 +44,7 @@ class Notification {
 
 	createNotification() {
 		const notification = document.createElement("div");
-		notification.classList.add("notification");
+		notification.classList.add("notification", "fade-in");
 
 		const iconElement = document.createElement("img");
 		iconElement.src = this.icon;

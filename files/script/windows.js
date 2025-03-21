@@ -460,9 +460,10 @@ function updateTaskbar(url, id, removeItem) {
 	btn.href = "javascript:void(0);";
 	if (id != "start-menu") btn.title = windows[id][0]; 
 	var icon = document.createElement("img");
+	icon.src = "files/img/Taskbar/no url icon.svg"; // set placeholder while resolving the image to avoid blank space
 	switch (id) {
 		case "start-menu":
-			icon.src= "files/img/UI/start-menu.svg"
+			icon.src = "files/img/UI/start-menu.svg"
 			break;
 		case "about":
 			icon.src = "files/img/icon.svg";
@@ -499,8 +500,12 @@ function updateTaskbar(url, id, removeItem) {
 				.catch(error => {
 					icon.src = 'files/img/Taskbar/no url icon.svg';
 				});
-			break;
-	}
+				break;
+			}
+	
+	icon.onerror = () => {
+		icon.src = "files/img/Taskbar/no url icon.svg";
+	};
 	icon.setAttribute("onclick", `showWindow("${id}")`);
 	icon.style.width = "48px";
 	btn.appendChild(icon);

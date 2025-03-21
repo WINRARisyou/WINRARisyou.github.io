@@ -107,6 +107,15 @@ body {
 	to { opacity: 0}
 }
 
+@keyframes fade-in {
+	from { opacity: 0;}
+	to { opacity: 100; }
+}
+
+.fade-in {
+	animation: fade-in 0.25s ease-in forwards;
+}
+
 .fade-out {
 	animation: fade-out 0.5s ease-in forwards;
 }
