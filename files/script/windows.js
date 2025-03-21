@@ -83,13 +83,12 @@ function startResize(event, windowElement, direction) {
 	resizingWindow = windowElement; // Store the reference to the window being resized
 	var rect = windowElement.getBoundingClientRect();
 
-
 	// save initial state
 	initialMouseX = event.clientX;
 	initialMouseY = event.clientY;
 	initialWidth = rect.width;
 	initialHeight = rect.height;
-	initialLeft = rect.left - 2; // moves two pixels to the right if not offset here
+	initialLeft = rect.left - 2; // moves two pixels to the right if not offset here for some reason
 	initialTop = rect.top - 2;
 
 	document.onmousemove = (e) => resizeWindow(e, windowElement, direction);
@@ -97,24 +96,15 @@ function startResize(event, windowElement, direction) {
 }
 
 function resizeWindow(event, windowElement, direction) {
-	/*
-	if (windowElement.offsetTop < 0) {
-	 	var x = Math.abs(windowElement.offsetTop)
-	 	windowElement.style.top = `${x + windowElement.offsetTop}px`
-	 	windowElement.style.height = `${x + windowElement.offsetHeight}px`
-	 	return;
-	}
-	*/
-	var iframe = windowElement.querySelector("iframe");
+	let iframe = windowElement.querySelector("iframe");
 	if (!resizing) return;
 	if (!iframe) return;
 	iframe.style.pointerEvents = "none";
-	var maxWidth = windowElement.querySelector("p").offsetWidth + 100;
+	let maxWidth = windowElement.querySelector("p").offsetWidth + 100; // can't shrink smaller than the title
 
 
-	var deltaX = event.clientX - initialMouseX; // horizontal movement
-	var deltaY = event.clientY - initialMouseY; // vertical movement
-
+	let deltaX = event.clientX - initialMouseX; // change in horizontal position
+	let deltaY = event.clientY - initialMouseY; // change in vertical position
 	switch (direction) {
 		case "right":
 			var newWidthRight = initialWidth + deltaX;
@@ -242,9 +232,6 @@ function stopResize() {
 		iframe.style.width = element.style.width;
 	})
 }
-
-
-
 
 // stop dragging on mouse release
 document.addEventListener("mouseup", () => {
@@ -499,7 +486,19 @@ function updateTaskbar(url, id, removeItem) {
 			icon.src = "/SMC-Desktop-Mod-Manager/files/images/icon-256.ico"
 			break;
 		default:
-			icon.src = `https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url}&size=128`;
+			const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url}&size=128`)}`;
+			fetch(proxyUrl)
+				.then(response => {return response.json()})
+				.then(data => {
+					if (data.status.http_code === 200) {
+						icon.src = `https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url}&size=128`
+					} else {
+						icon.src = 'files/img/Taskbar/no url icon.svg';
+					}
+				})
+				.catch(error => {
+					icon.src = 'files/img/Taskbar/no url icon.svg';
+				});
 			break;
 	}
 	icon.setAttribute("onclick", `showWindow("${id}")`);
