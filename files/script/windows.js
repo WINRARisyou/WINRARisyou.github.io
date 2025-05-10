@@ -67,9 +67,9 @@ function createCustomWindow() {
 	<p><em>**MUST HAVE THE https:// PART AT THE BEGINNING OR THE ICON WILL NOT WORK.</em></p><br>
 	<p>Color: <input id="col" type="text" placeholder="#00FF00"></p><br>
 	<p>**WILL NOT WORK WITHOUT THE "#". It's a hex code BTW, look up color picker and use the hex thing.</p><br>
-	<button onclick="new Window(document.getElementById('tInp').value, highestZIndex, 640, 360, document.getElementById('url').value, null, document.getElementById('col').value);updateTaskbar('', 'create-custom-window', true);this.parentElement.remove();">Create!</button>
+	<button onclick="new AppWindow(document.getElementById('tInp').value, highestZIndex, 640, 360, document.getElementById('url').value, null, document.getElementById('col').value);updateTaskbar('', 'create-custom-window', true);this.parentElement.remove();">Create!</button>
 	`
-	new Window("Create Custom App", "create-custom-window", 854, 480, null, winContent, "#ffcdff");
+	new AppWindow("Create Custom App", "create-custom-window", 854, 480, null, winContent, "#ffcdff");
 }
 
 // resize window logic
@@ -274,7 +274,7 @@ function showWindow(id) {
 		// destructure the window data
 		var [title, id, width, height, url, customHTML, color] = windowData;
 
-		new Window(title, id, width, height, url, customHTML, color);
+		new AppWindow(title, id, width, height, url, customHTML, color);
 		return;
 	}
 
@@ -314,7 +314,40 @@ function closeWindow(id) {
 var openWindows = document.getElementById("openWindows");
 var windows = {};
 
-class Window {
+/**
+ * Represents a customizable application window.
+ * 
+ * @class
+ * @param {string} title - The title of the window. Defaults to "Untitled Window" if empty.
+ * @param {string} id - A unique identifier for the window. Prevents duplicates if an element with the same ID exists.
+ * @param {number} width - The width of the window in pixels.
+ * @param {number} height - The height of the window in pixels (excluding the title bar height).
+ * @param {string} [url="https://google.com/webhp?igu=1"] - The URL to load in the window's iframe. Defaults to Google if empty.
+ * @param {string|null} [customHTML=null] - Custom HTML content to display in the window. If provided, overrides the iframe content.
+ * @param {string} [color="#00FF00"] - The background color of the window. Defaults to green if empty.
+ * 
+ * @property {HTMLElement} window - The DOM element representing the window.
+ * @property {string} title - The title of the window.
+ * @property {string} id - The unique identifier of the window.
+ * @property {number} width - The width of the window in pixels.
+ * @property {number} height - The height of the window in pixels.
+ * @property {string} url - The URL loaded in the window's iframe.
+ * @property {string|null} customHTML - Custom HTML content displayed in the window.
+ * @property {string} color - The background color of the window.
+ * 
+ * @example
+ * // Create a new application window
+ * const appWindow = new AppWindow(
+ *   "My App",
+ *   "appWindow1",
+ *   800,
+ *   600,
+ *   "https://example.com",
+ *   null,
+ *   "#FFFFFF"
+ * );
+ */
+class AppWindow {
 	constructor(title, id, width, height, url = "", customHTML = null, color = "#00FF00") {
 		if (document.getElementById(id) != null) return; // prevent duplicates
 		// default window attributes
@@ -342,33 +375,52 @@ class Window {
 		this.window = document.createElement("div");
 		this.window.id = this.id;
 		this.window.classList.add("window");
-		this.window.setAttribute("style", `width: ${this.width}px; height: ${this.height}px; top: 0px; left: 0px; background-color: ${this.color};`);
+		this.window.setAttribute("style", 
+			`width: ${this.width}px;
+			height: ${this.height}px;
+			top: 0px;
+			left: 0px;
+			background-color: ${this.color};
+		`);
 
 		// window title
 		const titleElem = document.createElement("p");
 		titleElem.textContent = this.title;
 		this.window.appendChild(titleElem);
+		// determine if the window bg color is light or dark
+		const hex = this.color.replace("#", "");
+		const r = parseInt(hex.substring(0, 2), 16);
+		const g = parseInt(hex.substring(2, 4), 16);
+		const b = parseInt(hex.substring(4, 6), 16);
+		const brightness = Math.round((r * 0.299 + g * 0.587 + b * 0.114));
+		// set the title color based on brightness
+		titleElem.style.color = brightness >= 128 ? "black" : "#FFFFE4";
+		console.log(`Title: ${this.title}, Color: ${this.color}, Brightness: ${brightness}`);
 
 		// window controls
 		const controls = document.createElement("div");
 		controls.classList.add("window-controls");
 
 		const openInNew = document.createElement("span");
-		openInNew.innerHTML = `<img src="files/img/UI/open in new.svg" width="16px"/>`;
+		const filter =  brightness >= 128 ? "" : "filter: invert(100%);";
+		openInNew.innerHTML = `<img src="files/img/UI/open in new.svg" width="16px" style="${filter}"/>`;
 		openInNew.onclick = () => openSite(this.url);
 
 		const minimize = document.createElement("span");
 		minimize.textContent = "‒";
+		minimize.style.color = brightness >= 128 ? "black" : "#FFFFE4";
 		minimize.onclick = () => minimizeWindow(this.id);
 
 		const maximize = document.createElement("span");
 		maximize.textContent = "□";
+		maximize.style.color = brightness >= 128 ? "black" : "#FFFFE4";
 		maximize.onclick = () => maximizeWindow(this.id);
 
 		const close = document.createElement("span");
 		close.innerHTML = "&times;";
 		close.id = "close";
 		close.style = "@keyframes controlHover { to { color: red; } } ; this:hover { animation: controlHover 0.25s forwards; }";
+		close.style.color = brightness >= 128 ? "black" : "#FFFFE4";
 		close.onclick = () => closeWindow(this.id);
 
 		controls.append(openInNew, minimize, maximize, close);
