@@ -100,15 +100,15 @@ function resizeWindow(event, windowElement, direction) {
 	if (!resizing) return;
 	if (!iframe) return;
 	iframe.style.pointerEvents = "none";
-	let maxWidth = windowElement.querySelector("p").offsetWidth + 100; // can't shrink smaller than the title
-
+	let minWidth = windowElement.querySelector("p").offsetWidth + 100; // can't shrink smaller than the title
+	let minHeight = 19;
 
 	let deltaX = event.clientX - initialMouseX; // change in horizontal position
 	let deltaY = event.clientY - initialMouseY; // change in vertical position
 	switch (direction) {
 		case "right":
 			var newWidthRight = initialWidth + deltaX;
-			if (newWidthRight >= maxWidth) {
+			if (newWidthRight >= minWidth) {
 				windowElement.style.width = `${newWidthRight}px`;
 				iframe.style.width = `${newWidthRight}px`;
 			}
@@ -116,7 +116,7 @@ function resizeWindow(event, windowElement, direction) {
 
 		case "left":
 			var newWidthLeft = initialWidth - deltaX;
-			if (newWidthLeft >= maxWidth) {
+			if (newWidthLeft >= minWidth) {
 				windowElement.style.width = `${newWidthLeft}px`;
 				iframe.style.width = `${newWidthLeft}px`;
 				windowElement.style.left = `${initialLeft + deltaX}px`; // adjust left position
@@ -125,7 +125,7 @@ function resizeWindow(event, windowElement, direction) {
 
 		case "bottom":
 			var newHeightBottom = initialHeight + deltaY;
-			if (newHeightBottom >= 100) {
+			if (newHeightBottom >= minHeight) {
 				windowElement.style.height = `${newHeightBottom}px`;
 				iframe.style.height = `${newHeightBottom - 20}px`;
 			}
@@ -133,7 +133,7 @@ function resizeWindow(event, windowElement, direction) {
 
 		case "top":
 			var newHeightTop = initialHeight - deltaY;
-			if (newHeightTop >= 100) {
+			if (newHeightTop >= minHeight) {
 				windowElement.style.height = `${newHeightTop}px`;
 				iframe.style.height = `${newHeightTop - 20}px`;
 				windowElement.style.top = `${initialTop + deltaY}px`; // adjust top position
@@ -143,7 +143,7 @@ function resizeWindow(event, windowElement, direction) {
 		case "top-right":
 			// Top
 			var newHeightTopRight = initialHeight - deltaY;
-			if (newHeightTopRight >= 100) {
+			if (newHeightTopRight >= minHeight) {
 				windowElement.style.height = `${newHeightTopRight}px`;
 				iframe.style.height = `${newHeightTopRight - 20}px`;
 
@@ -152,7 +152,7 @@ function resizeWindow(event, windowElement, direction) {
 			}
 			// Right
 			var newWidthTopRight = initialWidth + deltaX;
-			if (newWidthTopRight >= maxWidth) {
+			if (newWidthTopRight >= minWidth) {
 				windowElement.style.width = `${newWidthTopRight}px`;
 				iframe.style.width = `${newWidthTopRight}px`
 			}
@@ -161,14 +161,14 @@ function resizeWindow(event, windowElement, direction) {
 		case "top-left":
 			// Top
 			var newHeightTopLeft = initialHeight - deltaY;
-			if (newHeightTopLeft >= 100) {
+			if (newHeightTopLeft >= minHeight) {
 				windowElement.style.height = `${newHeightTopLeft}px`;
 				iframe.style.height = `${newHeightTopLeft - 20}px`;
 				windowElement.style.top = `${initialTop + deltaY}px`;
 			}
 			// Left
 			var newWidthTopLeft = initialWidth - deltaX;
-			if (newWidthTopLeft >= maxWidth) {
+			if (newWidthTopLeft >= minWidth) {
 				windowElement.style.width = `${newWidthTopLeft}px`;
 				iframe.style.width = `${newWidthTopLeft}px`;
 				windowElement.style.left = `${initialLeft + deltaX}px`;
@@ -179,14 +179,14 @@ function resizeWindow(event, windowElement, direction) {
 		case "bottom-right":
 			// Bottom
 			var newHeightBottomRight = initialHeight + deltaY;
-			if (newHeightBottomRight >= 100) {
+			if (newHeightBottomRight >= minHeight) {
 				windowElement.style.height = `${newHeightBottomRight}px`;
 				iframe.style.height = `${newHeightBottomRight - 20}px`;
 
 			}
 			// Right
 			var newWidthBottomRight = initialWidth + deltaX;
-			if (newWidthBottomRight >= maxWidth) {
+			if (newWidthBottomRight >= minWidth) {
 				windowElement.style.width = `${newWidthBottomRight}px`;
 				iframe.style.width = `${newWidthBottomRight}px`;
 
@@ -196,13 +196,13 @@ function resizeWindow(event, windowElement, direction) {
 		case "bottom-left":
 			// Bottom
 			var newHeightBottomLeft = initialHeight + deltaY;
-			if (newHeightBottomLeft >= 100) {
+			if (newHeightBottomLeft >= minHeight) {
 				windowElement.style.height = `${newHeightBottomLeft}px`;
 				iframe.style.height = `${newHeightBottomLeft - 20}px`
 			}
 			// Left
 			var newWidthBottomLeft = initialWidth - deltaX;
-			if (newWidthBottomLeft >= maxWidth) {
+			if (newWidthBottomLeft >= minWidth) {
 				windowElement.style.width = `${newWidthBottomLeft}px`;
 				windowElement.style.left = `${initialLeft + deltaX}px`;
 				iframe.style.width = `${newWidthBottomLeft}px`;
@@ -350,24 +350,43 @@ var windows = {};
 class AppWindow {
 	constructor(title, id, width, height, url = "", customHTML = null, color = "#00FF00") {
 		if (document.getElementById(id) != null) return; // prevent duplicates
+
 		// default window attributes
 		if (title == "") this.title = "Untitled Window";
 		else this.title = title;
+
 		this.id = id;
 		this.width = width;
 		this.height = height + 20;
+
 		if (url == "") this.url = "https://google.com/webhp?igu=1";
 		else this.url = url;
+
 		this.customHTML = customHTML;
+
 		if (color == "") this.color = "#00FF00";
 		else this.color = color
 
+		this.brightness = undefined;
+
+		this.determineBrightness();
 		this.createElement();
 		this.addEventListeners();
 		this.addResizeHandles();
-		showWindow(id);
 		windows[id] = [this.title, this.id, width, height, url, customHTML, color];
 		this.addToTaskbar();
+		showWindow(id);
+	}
+
+	determineBrightness() {
+		if (this.brightness != undefined) return;
+
+		// determine if the window bg color is light or dark
+		const hex = this.color.replace("#", "");
+		const r = parseInt(hex.substring(0, 2), 16);
+		const g = parseInt(hex.substring(2, 4), 16);
+		const b = parseInt(hex.substring(4, 6), 16);
+		this.brightness = Math.round((r * 0.299 + g * 0.587 + b * 0.114)); //used to set color of window elements
 	}
 
 	createElement() {
@@ -387,40 +406,35 @@ class AppWindow {
 		const titleElem = document.createElement("p");
 		titleElem.textContent = this.title;
 		this.window.appendChild(titleElem);
-		// determine if the window bg color is light or dark
-		const hex = this.color.replace("#", "");
-		const r = parseInt(hex.substring(0, 2), 16);
-		const g = parseInt(hex.substring(2, 4), 16);
-		const b = parseInt(hex.substring(4, 6), 16);
-		const brightness = Math.round((r * 0.299 + g * 0.587 + b * 0.114));
+		
 		// set the title color based on brightness
-		titleElem.style.color = brightness >= 128 ? "black" : "#FFFFE4";
-		console.log(`Title: ${this.title}, Color: ${this.color}, Brightness: ${brightness}`);
+		titleElem.style.color = this.brightness >= 128 ? "black" : "#FFFFFF";
+		console.log(`Title: ${this.title}, Color: ${this.color}, Brightness: ${this.brightness}`);
 
 		// window controls
 		const controls = document.createElement("div");
 		controls.classList.add("window-controls");
 
 		const openInNew = document.createElement("span");
-		const filter =  brightness >= 128 ? "" : "filter: invert(100%);";
+		const filter =  this.brightness >= 128 ? "" : "filter: invert(100%);";
 		openInNew.innerHTML = `<img src="files/img/UI/open in new.svg" width="16px" style="${filter}"/>`;
 		openInNew.onclick = () => openSite(this.url);
 
 		const minimize = document.createElement("span");
 		minimize.textContent = "‒";
-		minimize.style.color = brightness >= 128 ? "black" : "#FFFFE4";
+		minimize.style.color = this.brightness >= 128 ? "black" : "#FFFFFF";
 		minimize.onclick = () => minimizeWindow(this.id);
 
 		const maximize = document.createElement("span");
 		maximize.textContent = "□";
-		maximize.style.color = brightness >= 128 ? "black" : "#FFFFE4";
+		maximize.style.color = this.brightness >= 128 ? "black" : "#FFFFFF";
 		maximize.onclick = () => maximizeWindow(this.id);
 
 		const close = document.createElement("span");
 		close.innerHTML = "&times;";
 		close.id = "close";
 		close.style = "@keyframes controlHover { to { color: red; } } ; this:hover { animation: controlHover 0.25s forwards; }";
-		close.style.color = brightness >= 128 ? "black" : "#FFFFE4";
+		close.style.color = this.brightness >= 128 ? "black" : "#FFFFFF";
 		close.onclick = () => closeWindow(this.id);
 
 		controls.append(openInNew, minimize, maximize, close);
